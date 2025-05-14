@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
  * 自定义日志Advisor
  */
 @Slf4j
-public class MyLoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
+public class LoggingAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
 
     @NotNull
     @Override
@@ -20,14 +20,25 @@ public class MyLoggerAdvisor implements CallAroundAdvisor, StreamAroundAdvisor {
 
     @Override
     public int getOrder() {
-        return 0;
+        return AdvisorOrder.LOGGING;
     }
 
+    /**
+     * 执行请求前,记录请求信息
+     *
+     * @param request
+     * @return
+     */
     private AdvisedRequest before(AdvisedRequest request) {
         log.info("AI Request: {}", request.userText());
         return request;
     }
 
+    /**
+     * 执行请求后,记录响应信息
+     *
+     * @param advisedResponse
+     */
     private void observeAfter(AdvisedResponse advisedResponse) {
         log.info("AI Response: {}", advisedResponse.response().getResult().getOutput().getText());
     }

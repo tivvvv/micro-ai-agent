@@ -1,6 +1,7 @@
 package com.tiv.microaiagent.app;
 
-import com.tiv.microaiagent.advisor.MyLoggerAdvisor;
+import com.tiv.microaiagent.advisor.LoggingAdvisor;
+import com.tiv.microaiagent.advisor.ReReadingAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -31,7 +32,9 @@ public class ChatApp {
         ChatMemory chatMemory = new InMemoryChatMemory();
         chatClient = ChatClient.builder(chatModel)
                 .defaultSystem(DEFAULT_SYSTEM_PROMPT)
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory), new MyLoggerAdvisor())
+                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory),
+                        new LoggingAdvisor(),
+                        new ReReadingAdvisor())
                 .build();
     }
 
