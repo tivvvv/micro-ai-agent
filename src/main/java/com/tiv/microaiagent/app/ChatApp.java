@@ -1,5 +1,6 @@
 package com.tiv.microaiagent.app;
 
+import com.tiv.microaiagent.advisor.MyLoggerAdvisor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -19,7 +20,7 @@ public class ChatApp {
 
     private final ChatClient chatClient;
 
-    private String DEFAULT_SYSTEM_PROMPT = "你是java专家";
+    private final static String DEFAULT_SYSTEM_PROMPT = "你是java专家";
 
     /**
      * 初始化对话客户端
@@ -30,7 +31,7 @@ public class ChatApp {
         ChatMemory chatMemory = new InMemoryChatMemory();
         chatClient = ChatClient.builder(chatModel)
                 .defaultSystem(DEFAULT_SYSTEM_PROMPT)
-                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory))
+                .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory), new MyLoggerAdvisor())
                 .build();
     }
 
@@ -51,4 +52,5 @@ public class ChatApp {
         log.info("result: {}", result);
         return result;
     }
+
 }

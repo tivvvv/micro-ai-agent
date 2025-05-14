@@ -31,4 +31,5 @@ class ChatAppTest {
         answer = chatApp.doChat(msg, chatId);
         Assertions.assertNotNull(answer);
     }
+
 }
