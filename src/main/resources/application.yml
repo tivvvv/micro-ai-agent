@@ -30,8 +30,3 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
-
-app:
-  default:
-    system:
-      prompt: "你是java专家"
