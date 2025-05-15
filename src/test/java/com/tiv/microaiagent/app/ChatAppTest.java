@@ -32,4 +32,12 @@ class ChatAppTest {
         Assertions.assertNotNull(answer);
     }
 
+    @Test
+    void testChatWithStructuredOutput() {
+        String chatId = UUID.randomUUID().toString();
+        String msg = "我是超哥,我现在在一家大厂做java开发,我该怎么提升自己的水平";
+        ChatApp.JavaLearningGuide javaLearningGuide = chatApp.doChatWithStructuredOutput(msg, chatId);
+        Assertions.assertNotNull(javaLearningGuide);
+    }
+
 }
