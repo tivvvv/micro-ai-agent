@@ -2,11 +2,11 @@ package com.tiv.microaiagent.app;
 
 import com.tiv.microaiagent.advisor.LoggingAdvisor;
 import com.tiv.microaiagent.advisor.ReReadingAdvisor;
+import com.tiv.microaiagent.memory.FileBasedChatMemory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
-import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +33,8 @@ public class ChatApp {
      * @param chatModel
      */
     public ChatApp(@Qualifier("dashscopeChatModel") ChatModel chatModel) {
-        ChatMemory chatMemory = new InMemoryChatMemory();
+        String fileDir = System.getProperty("user.dir") + "/tmp/memory";
+        ChatMemory chatMemory = new FileBasedChatMemory(fileDir);
         chatClient = ChatClient.builder(chatModel)
                 .defaultSystem(DEFAULT_SYSTEM_PROMPT)
                 .defaultAdvisors(new MessageChatMemoryAdvisor(chatMemory),
