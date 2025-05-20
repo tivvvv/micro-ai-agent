@@ -62,7 +62,7 @@
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- 日志文件保留天数【根据服务器预留, 可自行调整】 -->
+            <!-- 日志文件保留天数[根据服务器预留, 可自行调整] -->
             <maxHistory>7</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>
