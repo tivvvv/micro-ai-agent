@@ -3,12 +3,15 @@ package com.tiv.microaiagent.app;
 import com.tiv.microaiagent.advisor.LoggingAdvisor;
 import com.tiv.microaiagent.advisor.ReReadingAdvisor;
 import com.tiv.microaiagent.memory.FileBasedChatMemory;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,9 @@ public class ChatApp {
     private final static String DEFAULT_SYSTEM_PROMPT = "你是Java专家";
 
     private final static String DEFAULT_STRUCTURED_OUTPUT_SYSTEM_PROMPT = "你是Java专家,每次对话后都要生成Java学习指南,标题为{用户名}的Java学习指南,内容为学习建议列表";
+
+    @Resource
+    private VectorStore vectorStore;
 
     /**
      * 初始化对话客户端
@@ -62,9 +68,15 @@ public class ChatApp {
     }
 
     public record JavaLearningGuide(String title, List<String> suggestions) {
-
     }
 
+    /**
+     * 基于结构化输出的对话
+     *
+     * @param msg
+     * @param chatId
+     * @return
+     */
     public JavaLearningGuide doChatWithStructuredOutput(String msg, String chatId) {
         JavaLearningGuide javaLearningGuide = chatClient.prompt()
                 .system(DEFAULT_STRUCTURED_OUTPUT_SYSTEM_PROMPT)
@@ -74,6 +86,25 @@ public class ChatApp {
                 .entity(JavaLearningGuide.class);
         log.info("javaLearningGuide: {}", javaLearningGuide);
         return javaLearningGuide;
+    }
+
+    /**
+     * 基于rag的对话
+     *
+     * @param msg
+     * @param chatId
+     * @return
+     */
+    public String doChatWithRag(String msg, String chatId) {
+        ChatResponse chatResponse = chatClient.prompt()
+                .system(DEFAULT_STRUCTURED_OUTPUT_SYSTEM_PROMPT)
+                .user(msg)
+                .advisors(new QuestionAnswerAdvisor(vectorStore))
+                .call()
+                .chatResponse();
+        String result = chatResponse.getResult().getOutput().getText();
+        log.info("result: {}", result);
+        return result;
     }
 
 }

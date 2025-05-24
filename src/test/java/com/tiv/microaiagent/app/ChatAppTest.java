@@ -40,4 +40,11 @@ class ChatAppTest {
         Assertions.assertNotNull(javaLearningGuide);
     }
 
+    @Test
+    void testChatWithRag() {
+        String chatId = UUID.randomUUID().toString();
+        String msg = "怎样深入掌握JVM原理与调优";
+        String answer = chatApp.doChatWithRag(msg, chatId);
+        Assertions.assertNotNull(answer);
+    }
 }
